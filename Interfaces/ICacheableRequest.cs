@@ -1,6 +1,8 @@
+using MediatR;
+
 namespace CacheInvalidation.Interfaces;
 
-public interface ICacheableRequest
+public interface ICacheableRequest<out TResponse> : IRequest<TResponse>
 {
     
 }

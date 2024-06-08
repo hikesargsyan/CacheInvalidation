@@ -1,6 +1,8 @@
 using System.Reflection;
 using CacheInvalidation;
 using CacheInvalidation.Behaviors;
+using CacheInvalidation.Interfaces;
+using CacheInvalidation.Services;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +18,9 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
 });
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSingleton<ICacheService, CacheService>();
 
 var app = builder.Build();
 

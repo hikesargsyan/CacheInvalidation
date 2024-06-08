@@ -2,13 +2,13 @@
 
 namespace CacheInvalidation;
 
-public class GetWeatherForecastCommandHandler
-    : IRequestHandler<GetWeatherForecastCommand, List<WeatherForecast>>
+public class GetWeatherForecastQueryHandler
+    : IRequestHandler<GetWeatherForecastQuery, List<WeatherForecast>>
 {
-    public GetWeatherForecastCommandHandler() { }
+    public GetWeatherForecastQueryHandler() { }
 
-    public Task<List<WeatherForecast>> Handle(
-        GetWeatherForecastCommand request,
+    public async Task<List<WeatherForecast>> Handle(
+        GetWeatherForecastQuery request,
         CancellationToken cancellationToken
     )
     {
@@ -26,7 +26,10 @@ public class GetWeatherForecastCommandHandler
             "Scorching"
         };
 
-        return Task.FromResult(
+        // Imitating long running request
+        await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
+
+        return
             Enumerable
                 .Range(1, 5)
                 .Select(index => new WeatherForecast(
@@ -34,7 +37,7 @@ public class GetWeatherForecastCommandHandler
                     Random.Shared.Next(-20, 55),
                     summaries[Random.Shared.Next(summaries.Length)]
                 ))
-                .ToList()
-        );
+                .ToList();
+
     }
 }
