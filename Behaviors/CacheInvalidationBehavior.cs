@@ -5,8 +5,7 @@ namespace CacheInvalidation.Behaviors;
 
 public class CacheInvalidationBehavior<TRequest, TResponse> :
     IPipelineBehavior<TRequest, TResponse>
-    where TRequest : ICacheableRequest<TResponse>
-    where TResponse : class
+    where TRequest : ICacheInvalidatorRequest<TResponse>
 
 {
     private readonly ICacheService _cacheService;
@@ -22,11 +21,9 @@ public class CacheInvalidationBehavior<TRequest, TResponse> :
         CancellationToken cancellationToken
     )
     {
-        //TODO edit request.ToString() part to take request params as well
-        return await _cacheService.GetOrSetAsync(request.ToString(), async () =>
-        {
-            return await next();
-        }, cancellationToken);
+
+        await _cacheService.RemoveAsync(request.CacheInvalidationKeys.FirstOrDefault(), cancellationToken);
+        return await next();
     }
 }
 
