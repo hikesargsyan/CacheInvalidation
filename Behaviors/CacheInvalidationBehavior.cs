@@ -3,14 +3,14 @@ using MediatR;
 
 namespace CacheInvalidation.Behaviors;
 
-public class CacheInvalidationBehavior<TRequest, TResponse> :
+public class CacheInvalidatingBehavior<TRequest, TResponse> :
     IPipelineBehavior<TRequest, TResponse>
     where TRequest : ICacheInvalidatorRequest<TResponse>
 
 {
     private readonly ICacheService _cacheService;
 
-    public CacheInvalidationBehavior(ICacheService cacheService)
+    public CacheInvalidatingBehavior(ICacheService cacheService)
     {
         _cacheService = cacheService;
     }
@@ -21,8 +21,11 @@ public class CacheInvalidationBehavior<TRequest, TResponse> :
         CancellationToken cancellationToken
     )
     {
+        foreach (var key in request.CacheInvalidationKeys)
+        {
+            await _cacheService.RemoveAsync(key, cancellationToken);
+        }
 
-        await _cacheService.RemoveAsync(request.CacheInvalidationKeys.FirstOrDefault(), cancellationToken);
         return await next();
     }
 }

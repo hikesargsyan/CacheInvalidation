@@ -22,7 +22,7 @@ where TResponse : class
         CancellationToken cancellationToken
     )
     {
-        //TODO edit request.ToString() part to take request params as well
+        //TODO? maybe edit typeof(TRequest).Name.ToString() part to take request params as well
 
         return await _cacheService.GetOrSetAsync(typeof(TRequest).Name.ToString(), async () =>
         {
