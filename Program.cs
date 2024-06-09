@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheInvalidationBehavior<,>));
 
 builder.Services.AddMediatR(cfg =>
@@ -35,9 +36,16 @@ app.UseHttpsRedirection();
 
 app.MapGet(
         "/weatherforecast",
-        async (IMediator mediator) => await mediator.Send(new GetWeatherForecastCommand())
+        async (IMediator mediator) => await mediator.Send(new GetWeatherForecastQuery())
     )
     .WithName("GetWeatherForecast")
+    .WithOpenApi();
+
+app.MapPost(
+        "/weatherforecast",
+        async (AddCityToWeatherForecastCommand request, IMediator mediator) => await mediator.Send(request)
+    )
+    .WithName("AddCity")
     .WithOpenApi();
 
 app.Run();
