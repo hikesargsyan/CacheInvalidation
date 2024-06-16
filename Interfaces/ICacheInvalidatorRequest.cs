@@ -1,10 +1,10 @@
-using MediatR;
+﻿using MediatR;
 
-namespace CacheInvalidation.Interfaces;
-
-public interface ICacheInvalidatorRequest<out TResponse> : IRequest<TResponse>
+namespace CacheInvalidation.Interfaces
 {
-
-    IList<string> CacheInvalidationKeys { get; }
+    public interface ICacheInvalidatorRequest<out TResponse> : IRequest<TResponse>
+    {
+        public Guid Id { get; }
+        public IList<string> CacheInvalidationKeys { get; }
+    }
 }
-

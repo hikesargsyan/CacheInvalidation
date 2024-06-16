@@ -2,8 +2,9 @@
 
 namespace CacheInvalidation;
 
-public class AddCityToWeatherForecastCommand : ICacheInvalidatorRequest<int>
+public class RefreshWeatherForecastCommand : ICacheInvalidatorRequest<WeatherForecast>
 {
-    public string City { get; set; }
     public IList<string> CacheInvalidationKeys { get; } = [nameof(GetWeatherForecastQuery)];
+
+    public Guid Id { get; set; }
 };

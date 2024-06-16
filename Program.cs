@@ -4,6 +4,7 @@ using CacheInvalidation.Behaviors;
 using CacheInvalidation.Interfaces;
 using CacheInvalidation.Services;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,14 +37,14 @@ app.UseHttpsRedirection();
 
 app.MapGet(
         "/weatherforecast",
-        async (IMediator mediator) => await mediator.Send(new GetWeatherForecastQuery())
+        async ([AsParameters] GetWeatherForecastQuery request, IMediator mediator) => await mediator.Send(request)
     )
     .WithName("GetWeatherForecast")
     .WithOpenApi();
 
-app.MapPost(
+app.MapPut(
         "/weatherforecast",
-        async (AddCityToWeatherForecastCommand request, IMediator mediator) => await mediator.Send(request)
+        async (RefreshWeatherForecastCommand request, IMediator mediator) => await mediator.Send(request)
     )
     .WithName("AddCity")
     .WithOpenApi();

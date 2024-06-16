@@ -23,7 +23,7 @@ public class CacheInvalidatingBehavior<TRequest, TResponse> :
     {
         foreach (var key in request.CacheInvalidationKeys)
         {
-            await _cacheService.RemoveAsync(key, cancellationToken);
+            await _cacheService.RemoveAsync($"{key}.{request.Id}", cancellationToken);
         }
 
         return await next();

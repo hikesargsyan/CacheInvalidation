@@ -1,20 +1,18 @@
 ﻿using MediatR;
+using System;
 
 namespace CacheInvalidation;
 
-public class GetWeatherForecastQueryHandler
-    : IRequestHandler<GetWeatherForecastQuery, WeatherForecast>
+public class RefreshWeatherForecastCommandHandler
+    : IRequestHandler<RefreshWeatherForecastCommand, WeatherForecast>
 {
-    public GetWeatherForecastQueryHandler() { }
+    public RefreshWeatherForecastCommandHandler() { }
 
     public async Task<WeatherForecast> Handle(
-        GetWeatherForecastQuery request,
+       RefreshWeatherForecastCommand request,
         CancellationToken cancellationToken
     )
     {
-        // Imitating long running request
-        await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
-
         var city = WeatherForecast.Cities.FirstOrDefault(c => c.Id == request.Id);
 
         if (city == null)
@@ -22,11 +20,10 @@ public class GetWeatherForecastQueryHandler
             throw new Exception("not found");
         }
 
-        return new WeatherForecast(
+        return await Task.FromResult(new WeatherForecast(
                 DateOnly.FromDateTime(DateTime.UtcNow),
                 Random.Shared.Next(-20, 55),
                 city.Name
-        );
-
+        ));
     }
 }

@@ -22,9 +22,8 @@ where TResponse : class
         CancellationToken cancellationToken
     )
     {
-        //TODO? maybe edit typeof(TRequest).Name.ToString() part to take request params as well
 
-        return await _cacheService.GetOrSetAsync(typeof(TRequest).Name.ToString(), async () =>
+        return await _cacheService.GetOrSetAsync($"{typeof(TRequest).Name}.{request.Id}", async () =>
         {
             return await next();
         }, cancellationToken);
